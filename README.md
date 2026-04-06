@@ -48,12 +48,15 @@ O endereço local é exibido no terminal (padrão do Vite: `http://localhost:517
 | `npm run dev` | Servidor de desenvolvimento com recarregamento ao salvar |
 | `npm run build` | Gera artefatos otimizados em `dist/` |
 | `npm run preview` | Serve localmente o build de produção |
-| `npm run deploy` | Envia `dist/` para GitHub Pages (pacote `gh-pages`) |
+| `npm run deploy` | Alternativa manual: publica `dist/` via pacote `gh-pages` (opcional) |
 
 ## Estrutura de diretórios
 
 ```
 portfolio/
+├── .github/
+│   └── workflows/
+│       └── deploy-pages.yml
 ├── index.html
 ├── vite.config.js
 ├── package.json
@@ -75,13 +78,16 @@ Em `vite.config.js`, a propriedade `base` define o caminho público dos assets:
 - Repositório publicado em `https://<usuario>.github.io/portfolio/`: manter `base: '/portfolio/'`.
 - Site na raiz de um domínio (ou repositório com outro nome): ajustar para `base: '/'` (ou `'/<nome-do-repo>/'`) antes do build.
 
-## Deploy (GitHub Pages)
+## Deploy (GitHub Pages com GitHub Actions)
 
-1. Confirmar `base` no `vite.config.js` conforme a URL final.
-2. Executar `npm run build`.
-3. Executar `npm run deploy`.
+Configuração **única** no repositório GitHub:
 
-No GitHub: **Settings → Pages → Build and deployment**: branch `gh-pages`, pasta raiz (`/`).
+1. **Settings → Pages → Build and deployment**
+   - **Source**: *GitHub Actions* (não use branch `gh-pages` se for usar só o workflow).
+2. Garantir que o `base` em `vite.config.js` coincide com a URL (ex.: repositório `portfolio` → `base: '/portfolio/'`).
+3. Fazer **push** para a branch `main` ou `master` (ou disparar manualmente em **Actions → Deploy to GitHub Pages → Run workflow**).
+
+O arquivo `.github/workflows/deploy-pages.yml` executa `npm ci`, `npm run build` e publica a pasta `dist/` automaticamente a cada commit nas branches configuradas.
 
 ## Licença
 
